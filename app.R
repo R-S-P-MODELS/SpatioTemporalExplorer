@@ -267,11 +267,17 @@ server <- function(input, output) {
     print(head(Data))
     DimensionsToFilter=DimensionsToFilter[DimensionsToFilter!=input$DimensionX]
     DimensionsToFilter=DimensionsToFilter[DimensionsToFilter!=input$DimensionY]
+    for(fatorizacao in DimensionsToFilter){
+		Data[fatorizacao]=paste0(fatorizacao,"=",Data[[fatorizacao]]   )
+	}
     figura=ggplot(Data) + aes_string(x=input$DimensionX,y=input$DimensionY,fill=input$Variables ) + geom_tile()
+    if(length(DimensionsToFilter)>0){
     string=paste(DimensionsToFilter,collapse = "+")
     string=paste('~',string)
+    figura=figura+facet_wrap(as.formula(string)  ) 
+	}
     #print(string)
-    print(figura+facet_wrap(string  ) ) +  scale_fill_gradientn(colours=rainbow(20))
+    print(figura +  scale_fill_gradientn(colours=rainbow(20)) )
     
   })
   
